@@ -67,7 +67,7 @@ jobs:
       # https://github.com/marketplace/actions/checkout
 
       - name: GitHub Checkout
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v3
         with:
           ref: ${{ inputs.checkout_ref }}
 
@@ -166,7 +166,7 @@ jobs:
       # https://github.com/marketplace/actions/checkout
 
       - name: GitHub Checkout
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v3
         with:
           ref: ${{ inputs.checkout_ref }}
 
