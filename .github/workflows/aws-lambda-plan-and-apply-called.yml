@@ -137,7 +137,7 @@ jobs:
 
       - name: Upload Encrypted Artifact
         if: steps.plan.outputs.exitcode == 2
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.tf_workspace }}-encrypted-plan
           path: ${{ inputs.working_dir }}/plan.out.gpg
@@ -146,7 +146,7 @@ jobs:
 
       - name: Upload Lambda Build Artifact
         if: steps.plan.outputs.exitcode == 2
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.tf_workspace }}-lambda-build
           path: ${{ inputs.working_dir }}/build/*.zip
