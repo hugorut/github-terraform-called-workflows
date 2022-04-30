@@ -42,7 +42,7 @@ jobs:
         run: >-
           infracost breakdown
           --path ${{ inputs.path }}
-          --terraform-plan-flags ${{ inputs.terraform_plan_flags }} ${{ secrets.terraform_secret_plan_flags }}
+          ${{ inputs.terraform_plan_flags }} ${{ secrets.terraform_secret_plan_flags }}
           --terraform-parse-hcl
           --format=json
           --out-file=/tmp/infracost-base.json
@@ -60,7 +60,7 @@ jobs:
         run: >-
           infracost breakdown
           --path ${{ inputs.path }}
-          --terraform-plan-flags ${{ inputs.terraform_plan_flags }} ${{ secrets.terraform_secret_plan_flags }}
+          ${{ inputs.terraform_plan_flags }} ${{ secrets.terraform_secret_plan_flags }}
           --terraform-parse-hcl
           --format=json
           --compare-to /tmp/infracost-base.json
