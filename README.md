@@ -24,7 +24,7 @@ on:
 jobs:
   global_infra:
     name: Global
-    uses: lzysh/github-terraform-called-workflows/.github/workflows/azure-plan-and-apply-called.yml@v1.0.0
+    uses: lzysh/github-terraform-called-workflows/.github/workflows/azure-plan-and-apply-called.yml@v1.1.0
     with:
       arm_subscription_id: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
       checkout_ref: ${{ github.ref }}
@@ -43,7 +43,7 @@ jobs:
 
   eastus_infra:
     name:  "Infra: eastus"
-    uses: lzysh/github-terraform-called-workflows/.github/workflows/azure-plan-and-apply-called.yml@v1.0.0
+    uses: lzysh/github-terraform-called-workflows/.github/workflows/azure-plan-and-apply-called.yml@v1.1.0
     with:
       arm_subscription_id: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
       checkout_ref: ${{ github.ref }}
@@ -74,7 +74,7 @@ on:
 jobs:
   global_infra:
     name: Global
-    uses: lzysh/github-terraform-called-workflows/.github/workflows/aws-plan-and-apply-called.yml@v1.0.0
+    uses: lzysh/github-terraform-called-workflows/.github/workflows/aws-plan-and-apply-called.yml@v1.1.0
     with:
       checkout_ref: ${{ github.ref }}
       github_env: "Development Infrastructure: Global"
@@ -94,7 +94,7 @@ jobs:
 
   us_east_1_infra:
     name:  "Infra: us-east-1"
-    uses: lzysh/github-terraform-called-workflows/.github/workflows/aws-plan-and-apply-called.yml@v1.0.0
+    uses: lzysh/github-terraform-called-workflows/.github/workflows/aws-plan-and-apply-called.yml@v1.1.0
     with:
       checkout_ref: ${{ github.ref }}
       github_env: "Development Infrastructure: Regional - us-east-1"
@@ -126,7 +126,7 @@ on:
 jobs:
   global_infra:
     name: "Global"
-    uses: lzysh/github-terraform-called-workflows/.github/workflows/gcp-plan-and-apply-called.yml@v1.0.0
+    uses: lzysh/github-terraform-called-workflows/.github/workflows/gcp-plan-and-apply-called.yml@v1.1.0
     with:
       checkout_ref: ${{ github.ref }}
       github_env: "Acceptance Infrastructure: Global"
@@ -143,7 +143,7 @@ jobs:
 
   europe_west1_infra:
     name: "Infra: europe-west1"
-    uses: lzysh/github-terraform-called-workflows/.github/workflows/gcp-plan-and-apply-called.yml@v1.0.0
+    uses: lzysh/github-terraform-called-workflows/.github/workflows/gcp-plan-and-apply-called.yml@v1.1.0
     needs: global_infra
     with:
       checkout_ref: ${{ github.ref }}
@@ -157,4 +157,24 @@ jobs:
       gpg_passphrase: ${{ secrets.GPG_PASSPHRASE }}
       service_account_key: ${{ secrets.GCP_UTILS_PRE_PROD_GITHUB_SA_KEY }}
       ssh_key: ${{ secrets.LZYSH_RO_SSH_PRIV_KEY }}
+```
+
+### Infracost Compare To Usage
+
+```yaml
+name: Infracost
+on:
+  pull_request:
+    paths-ignore:
+      - "**.md"
+
+jobs:
+  infracost-check:
+    name: "Infracost: default_project"
+    uses: lzysh/github-terraform-called-workflows/.github/workflows/infracost-pr-compare-to-called.yml@v1.1.0
+    with:
+      path: test/fixtures/default_project
+    secrets:
+      infracost_api_key: ${{ secrets.INFRACOST_API_KEY }}
+      terraform_secret_plan_flags: "-var=billing_id=${{ secrets.BILLING_ID }}"
 ```

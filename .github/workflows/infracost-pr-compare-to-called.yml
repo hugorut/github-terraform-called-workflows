@@ -1,0 +1,76 @@
+name: Infracost Pull Request Compare To Called Workflow
+
+on:
+  workflow_call:
+    inputs:
+      path:
+        required: true
+        type: string
+      terraform_plan_flags:
+        required: false
+        type: string
+
+    secrets:
+      infracost_api_key:
+        required: true
+      terraform_secret_plan_flags:
+        required: false
+
+jobs:
+  infracost-check:
+    name: Compare To Check
+    runs-on: ubuntu-latest
+
+    steps:
+      # GitHub - Checkout
+      # https://github.com/marketplace/actions/checkout
+
+      - name: GitHub Checkout Base Branch
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.base.ref }}
+
+      # Infracost Actions
+      # https://github.com/marketplace/actions/infracost-actions
+
+      - name: Setup Infracost
+        uses: infracost/actions/setup@v1.1.2
+        with:
+          api-key: ${{ secrets.infracost_api_key }}
+
+      - name: Run Infracost on Base Branch
+        run: >-
+          infracost breakdown
+          --path ${{ inputs.path }}
+          --terraform-plan-flags ${{ inputs.terraform_plan_flags }} ${{ secrets.terraform_secret_plan_flags }}
+          --terraform-parse-hcl
+          --format=json
+          --out-file=/tmp/infracost-base.json
+
+      # GitHub - Checkout
+      # https://github.com/marketplace/actions/checkout
+
+      - name: GitHub Checkout PR Branch
+        uses: actions/checkout@v3
+
+      # Infracost Actions
+      # https://github.com/marketplace/actions/infracost-actions
+
+      - name: Run Infracost on PR Branch
+        run: >-
+          infracost breakdown
+          --path ${{ inputs.path }}
+          --terraform-plan-flags ${{ inputs.terraform_plan_flags }} ${{ secrets.terraform_secret_plan_flags }}
+          --terraform-parse-hcl
+          --format=json
+          --compare-to /tmp/infracost-base.json
+          --out-file=/tmp/infracost.json
+
+      - name: Post Infracost Comment
+        run: >-
+          infracost comment github
+          --path /tmp/infracost.json
+          --repo $GITHUB_REPOSITORY
+          --github-token ${{github.token}}
+          --pull-request ${{github.event.pull_request.number}}
+          --behavior update
