@@ -58,7 +58,7 @@ jobs:
 
       - name: Run Infracost on PR Branch
         run: >-
-          infracost breakdown
+          infracost diff
           --path ${{ inputs.path }}
           --terraform-plan-flags ${{ inputs.terraform_plan_flags }} ${{ secrets.terraform_secret_plan_flags }}
           --terraform-parse-hcl
